@@ -11,6 +11,7 @@ var scrape = function (callback) {
 
         var $ = cheerio.load(html);
 
+
         $("h2.story-title").each(function (i, element) {
 
             var result = {};
@@ -21,12 +22,11 @@ var scrape = function (callback) {
 
             if (result.title !== "" && result.link !== ""); {
                 articlesArr.push(result);
-
             }
         });
-
         callback(articlesArr);
     });
+
 };
 
 module.exports = scrape;
