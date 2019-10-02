@@ -1,7 +1,7 @@
 {
   "name": "mongoose-scraper",
   "version": "1.0.0",
-  "description": "",
+  "description": "mongodb scraper",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -10,12 +10,13 @@
     "type": "git",
     "url": "git+https://github.com/dudeitsrowsheen/mongoose-scraper.git"
   },
-  "author": "",
+  "author": "Roisin Hayes Owens",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/dudeitsrowsheen/mongoose-scraper/issues"
   },
   "homepage": "https://github.com/dudeitsrowsheen/mongoose-scraper#readme",
+  "keywords": [],
   "dependencies": {
     "axios": "^0.19.0",
     "body-parser": "^1.19.0",
