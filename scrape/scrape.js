@@ -1,6 +1,8 @@
 // scraping tools
+var mongoose = require("mongoose");
 var request = require("request");
 var cheerio = require("cheerio");
+var Schema = mongoose.Schema;
 
 //scrape articles from Buzzfeed
 var scrape = function (callback) {
