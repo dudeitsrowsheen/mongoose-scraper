@@ -1,90 +1,113 @@
-  $(document).ready(function() {
-    var $winwidth = $(window).width();
-    $("img.main-img").attr({
-        width: $winwidth
+var noteId = '';
+
+    $("#scrape").on("click", function (e) {
+        e.preventDefault();
+        $.ajax({
+            method: "GET",
+           url: "/scrape"
+        })
+            .then(function () {
+                window.location.replace("/");
+            })
     });
-    $(window).bind("resize", function() {
-        var $winwidth = $(window).width();
-        $("img.main-img").attr({
-            width: $winwidth
-        });
+
+    $("#clear").on("click", function (e) {
+        e.preventDefault();
+        $.ajax({
+            method: "GET",
+            url: "/clear"
+        })
+            .then(function () {
+                window.location.replace("/");
+            })
     });
-    $(".scrape").click(function (event) {
-        event.preventDefault();
-        $.get("/api/fetch").then(function (data) {
-            $(".articles").remove();
-            $.get("/").then(function () {
-                alert.apply("<h1 class='text-center m-topo-80'>" + data.message + "<h1>", function (result) {
-                    location.reload()
-                });
+
+    colorBg = item => {
+        if (item.saved) {
+          $(this).addClass("saved");
+        } else {
+          $(this).removeClass("saved")
+        }
+      }
+
+    $(".save-article").on("click", function (e) {
+        e.preventDefault();
+        var thisId = $(this).parents(".card").data("id");
+        $.ajax({
+            method: "GET",
+            url: "/save/" + thisId,
+        })
+            .then(function () {
+                $("#" + thisId).children("div.card-body").addClass("saved");
+                $("#" + thisId).children("div.card-body").children(".save-article").addClass("disabled");
+                $("#" + thisId).children("div.card-body").children(".unsave-article").removeClass("disabled");
+            })
+    });
+
+    $(".unsave-article").on("click", function (e) {
+        e.preventDefault();
+        var thisId = $(this).parents(".card").data("id");
+        $.ajax({
+            method: "GET",
+            url: "/unsave/" + thisId,
+        })
+            .then(function () {
+                $("#" + thisId).children("div.card-body").removeClass("saved");
+                $("#" + thisId).children("div.card-body").children(".save-article").addClass("disabled");
+                $("#" + thisId).children("div.card-body").children(".unsave-article").removeClass("disabled");
+            })
+    });
+
+    $(".note-button").on("click", function (e) {
+        e.preventDefault();
+        noteId = $(this).parents(".card").data("id");
+        console.log(noteId);
+        var noteFields = $(this).parents(".card-body").children(".submitNote");
+
+        $(this).parents(".card-body").children(".card-text").addClass("hidden");
+        $(this).parents(".card-body").children(".save-article").addClass("hidden");
+        $(this).parents(".card-body").children(".unsave-article").removeClass("hidden");
+        $(".note-button").addClass("disabled");
+
+        $.ajax({
+            method: "GET",
+            url: "/articles/" + noteId,
+        })
+            .then(function (data) {
+                console.log(data);
+                var note = data.note.note;
+                var title = data.note.title;
+
+                noteFields.children("textarea#title-input").text(title);
+                noteFields.children("textarea#note-input").text(note);
+
             });
-        });
     });
 
-    $(".save-articlee").click(function () {
-        var articleToSave = {};
-        articleToSave.id = $(this).data("id");
-        articleToSave.saved = true;
-        $.ajax({
-            method: "PATCH",
-            url: "/api/articles",
-            data: articleToSave
-        }).then(function (data) {
-            location.reload();
-        });
-    });
+    $(".submit-note").on("click", function (e) {
+        e.preventDefault();
+        var noteTitle = $(this).parents("div.submitNote").children("textarea#title-input").val();
+        var noteNote = $(this).parents("div.submitNote").children("textarea#title-input").val();
 
-    $(".removeSaved").click(function () {
-        var articleToremoveSaved = {};
-        articleToremoveSaved.id = $(this).data("id");
-        articleToremoveSaved.saved = false;
-        $.ajax({
-            method: "PATCH",
-            url: "/api/articles",
-            data: articleToremoveSaved
-        }).then(function (data) {
-            location.reload();
-        });
-    });
+        $(this).parents(".card-body").children(".card-text").addClass("hidden");
+        $(this).parents(".card-body").children(".button-area").addClass("hidden");
+        $(this).parents(".card-body").children(".submitNote").addClass("hidden");
+        $(".note-button").removeClass("disabled");
 
-    $('.saved-buttons').on('click', function () {
-
-        var thisId = $(this).attr({ "data=value": thisId });
-
-        $.get("/notes/" + thisId, function (data) {
-            consosle.log(data);
-
-            $('#noteModalLabel').empty();
-            $('#notesBody').empty();
-            $('#notestext').val('');
-
-            $('#noteModalLabel').append(' ' + thisId);
-
-            for (var i = 0; i < data.note.length; i++) {
-                var button = ' <a href=/deleteNote/' + data.note[i]._id + '><i class="pull-right fa fa-times fa-2x deeletex" aria-hodden="true></i></a>';
-                $('#notesBody').append('<div class="panel panel-defalt"><div class="noteText panel-body">' + data.note[i].b);
-            }
-        });
-    });
-
-    $(".savenote").click(function () {
-
-        var thisId = $(this).attr("data-value");
-
+        console.log(noteTitle);
+        console.log(noteNote);
+        console.log(noteId);
 
         $.ajax({
             mathood: "POST",
-            url: "/notes/" + thisId,
+            url: "/articles/" + noteId,
             data: {
-
-                body: $("#notestext").val().trim()
+                title: noteTitle,
+                note: noteNote,
+                article: noteId
             }
         })
-    }
-        .done(function (data) {
-            $('#noteModal').modal('hide');
-
-        })
-    );
-
-});
+            .then(function (data) {
+                console.log(data);
+        });
+    });

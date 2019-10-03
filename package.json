@@ -1,7 +1,7 @@
 {
   "name": "mongoose-scraper",
   "version": "1.0.0",
-  "description": "mongodb scraper",
+  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -28,6 +28,7 @@
     "handlebars": "^4.4.2",
     "mongoose": "^5.7.3",
     "morgan": "^1.9.1",
+    "nodemon": "^1.19.3",
     "request": "^2.88.0"
   }
 }
